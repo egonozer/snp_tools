@@ -214,7 +214,7 @@ foreach my $gen (@output_order){
     my $gen_id = $gen_ids{$gen};
     if (-e "TemporaryFiles/gen$gen_id.kmers_sorted.txt"){
         print STDERR "Correcting $gen...\n";
-        my $status = system("perl", "$script_path/ksnp_snp_confirm_batch.correct_mt.pl", "$gen_id", "$armleng", "$err", "$threads", "$temp_path");
+        my $status = system("perl", "$script_path/lib/ksnp_snp_confirm_batch.correct_mt.pl", "$gen_id", "$armleng", "$err", "$threads", "$temp_path");
         die "ERROR: ksnp_snp_confirm_batch.correct_mt.pl exited with status: $status. Message '$?'\n" if $status;
         my ($num_mixed, $num_omitted) = (0) x 2;
         open (my $in, "< TemporaryFiles/gen$gen_id.corr_results.txt") or die "ERROR: Can't open TemporaryFiles/gen$gen_id.corr_results.txt: $!\n";
