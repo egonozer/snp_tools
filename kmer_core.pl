@@ -24,7 +24,7 @@ my $version = "0.3";
 my $dirname = dirname(__FILE__);
 
 my $usage = "
-ksnp_kmer_core.pl
+kmer_core.pl
 
 DESCRIPTION: Determines the set of kmers that are present in a given subset of
 a group of input genomes. This can be used as input to kSNP.
@@ -367,8 +367,8 @@ for my $i (0 .. $#files){
         
         my $process_time = time;
         my @r_seqs;
-        my $sys_status = system("perl $dirname/lib/ksnp_kmer_core_mt_conflict.pl $count $threads $err");
-        die "\nERROR: perl $dirname/lib/ksmp_kmer_core_mt_conflict.pl failed with status $sys_status\n" if $sys_status != 0;
+        my $sys_status = system("perl $dirname/lib/kmer_core_mt_conflict.pl $count $threads $err");
+        die "\nERROR: perl $dirname/lib/kmer_core_mt_conflict.pl failed with status $sys_status\n" if $sys_status != 0;
         open (my $in, "< tmp_read_conflicts.txt") or die "\nERROR: Can't open tmp_read_conflicts.txt: $!\n";
         my $rc_count = 0;
         while (my $line = <$in>){
@@ -437,8 +437,8 @@ my $a_num = roundup(($a_pct / 100) * $nog);
 my @core_kmers;
 my %gen_kmers;
 my $merge_time = time;
-my $sys_status = system("perl $dirname/lib/ksnp_kmer_core_mt_merge.pl $threads $a_num $count");
-die "\nERROR: perl $dirname/lib/ksmp_kmer_core_mt_merge.pl failed with status $sys_status\n" if $sys_status != 0;
+my $sys_status = system("perl $dirname/lib/kmer_core_mt_merge.pl $threads $a_num $count");
+die "\nERROR: perl $dirname/lib/kmer_core_mt_merge.pl failed with status $sys_status\n" if $sys_status != 0;
 open (my $in, "< tmp_merge_out.txt") or die "\nERROR: Can't open tmp_merge_out.txt: $!\n";
 while (my $line = <$in>){
     chomp $line;
