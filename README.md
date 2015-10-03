@@ -68,6 +68,46 @@ etc..
 `-t`    number of threads (default: 15)
 
 ###kmer_core.pl
+```
+kmer_core.pl
+```
+**DESCRIPTION:** Determines the set of kmers that are present in a given subset of a group of input genomes. This can be used as input to kSNP.
+
+**PARAMETERS:**
+
+Required:
+
+`-f`    text file with names and paths to input genomes, separated by any white space. Each file listed should be in fasta format. Multi-contig genome files are permitted, but each sequence file will be assumed to contain sequence for only one genome.
+
+*OPTIONAL:* After the genome name and the path to the genome sequence file, paths to one or more sequencing read files (in fastq or fasta format) can be included. These will be used to find kmers with conflicting alleles that were collapsed in assembly and/or kmers present in reads, but for which assembly failed in one or more strains. New kmers will not be identified from read sets. They will only be used to confirm kmers found in at least one of the input genomic sequence files. Gzipped read files (with .gz extension) can be given.
+
+*FORMAT:*
+
+`<genome_id> </path/to/sequence.fasta> </path/to/reads.fastq OPTIONAL> </path/to/reads2.fastq.gz OPTIONAL> etc.`
+
+*EXAMPLE:*
+```        
+PAO1 seqs/PAO1_contigs.fasta
+PA14 seqs/PA14_contigs.fasta reads/PA14_1.fastq.gz reads/PA14_2.fastq.gz
+PA7 seqs/PA7_contigs.fasta reads/PA7_1.fastq.gz
+```
+---
+Optional:
+
+`-a`    minimum percentage of the total input genomes in which a kmer must be found to be considered core (default: 100)
+
+`-k`    kmer size. Maximum value is 31. (default: 31)
+
+`-n`    number of N's with which to separate kmers in the core kmers sequence output file (default: 1)
+
+`-t`    number of CPUs / threads (default: 15)
+
+`-o`    output files prefix (default: output)
+
+`-m`    [in reads file(s)] minimum number of times a kmer must be present to be counted. (default: 5)
+
+`-e`    [in reads file(s)] maximum allowable error rate between number of reads with reference base and number of reads with discrepant base. This is calcuated as: `1 - (Nref / (Na + Nc + Ng + Nt))` where `Nref` is the number of reads with the reference base and `Na` is the number of reads with "A" at the SNP position, `Nc` is the number of reads with "C" at the SNP position, etc. (default: 0.1)
+
 
 ###kmer_compare.pl
 
