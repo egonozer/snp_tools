@@ -100,7 +100,7 @@ Optional:
 
 `-n`    number of N's with which to separate kmers in the core kmers sequence output file (default: 1)
 
-`-t`    number of CPUs / threads (default: 15)
+`-t`    number of threads (default: 15)
 
 `-o`    output files prefix (default: output)
 
@@ -110,6 +110,83 @@ Optional:
 
 
 ###kmer_compare.pl
+```
+kmer_compare.pl
+```
+Determines SNP differences among pairs of sequences.
+
+**Required:**
+
+`-f`    file containing sequences or kmers of input strains
+        
+Strains may be provided assembled as fasta files or raw read files or both. To save time (if performing multiple comparisons), can also pre-process sequence files using 'jellyfish count' and 'jellyfish dump' and provide the resulting non-binary kmer quantity files. Just make sure all the kmer files have the same length kmers or else the script will exit with an error.
+        
+*VERY IMPORTANT:* If providing pre-processed jellyfish files, you must ensure that jellyfish count was run with the '-C' (both-strands) option or this program's output will almost certainly be incorrect.
+        
+Each line in the file should have three columns separated by tabs.
+
+* 1st column: Unique strain ID
+* 2nd column: Path to sequence or kmer file
+* 3rd column: File type. The possible file types are as follows
+..*`fs`    = assembled sequence file in fasta format
+..*`fr`    = sequence reads in fasta or fastq format
+..*`js`    = kmer file
+..*`jr`    = kmer file from reads
+
+If the third column entry does not match these types or is left blank, the file will be assumed to be of type 'fs'.
+        
+The script accepts gzipped or uncompressed files.
+        
+If multiple files are provided for a strain (i.e. forward and reverse reads), their paths must be provided on separate lines with the same strain ID (column 1). If both assembly and read sequences are given for a strain, only kmers found in the assembly will be compared and reads will only be used to identify conflicting kmers within a genome.
+        
+Optional comments may follow any line as long as they are preceded by a `#`.
+        
+Example file:
+```
+genA    /path/to/genA.fasta fs          #genA is a sequence assembly
+genB    /path/to/genB.fasta fs          #genB is a sequence assembly
+genB    /path/to/genB_1.fastq.gz    fr  #including sequence reads for genB
+genC    /path/to/genC_1.fastq.gz    fr  #only providing reads for genC
+genC    /path/to/genC_2.fastq.gz    fr
+genD    /path/to/genD_kmers.txt     js  #file of kmers from the genD assembly
+genE    /path/to/genE_kmers.txt.gz  jr  #file of kmers from the genE reads (gzipped)
+```
+        
+*OPTIONAL:* If you would only like to compare one or more reference genomes to a group of other genomes, and not every possible all-vs-all pairwise comparison, then add a `*` character at the end of the desired reference genomes'line(s).
+
+For example:
+
+```
+genA    /path/to/genA.fasta fs  *
+genB    /path/to/genB.fasta fs          
+genB    /path/to/genB_1.fastq.gz    fr
+genC    /path/to/genC_1.fastq.gz    fr
+genC    /path/to/genC_2.fastq.gz    fr
+genD    /path/to/genD_kmers.txt     js
+genE    /path/to/genE_kmers.txt.gz  jr
+```
+
+In the above example, instead of all possible pairwise comparisons of the 5 genomes, the comparisons performed will be:
+
+* genA to genB
+* genA to genC
+* genA to genD
+* genA to genE
+* done.
+        
+**Optional:**
+
+`-c`    File of kmers to which to limit the analysis, i.e. the file of core kmers output by 'kmer_core.pl'. This should be a fasta file of kmers with one or more N's separating the kmers. If this file is given, it will provide the kmer size and any entry to (-k) will be ignored. (default: all SNP kmers in common between two strains will be counted)
+
+`-k`    kmer size.  This setting will be ignored if jellyfish kmer files are provided or if a list of kmers is given using (`-c`) (default: 31)
+
+`-m`    [in reads file(s)] minimum number of times a kmer must be present to be counted. (default: 5)
+
+`-e`    [in reads file(s)] maximum allowable error rate between number of reads with reference base and number of reads with discrepant base. This is calcuated as: `1 - (Nref / (Na + Nc + Ng + Nt))` where `Nref` is the number of reads with the reference base and `Na` is the number of reads with "A" at the SNP position, `Nc` is the number of reads with "C" at the SNP position, etc. (default: 0.1)
+
+`-o`    output prefix (default: "output")
+
+`-t`    threads (default: 15)
 
 ###kmer_compare_groups.pl
 
