@@ -61,7 +61,7 @@ etc..
 
 `-l`    minimum number of times a kmer must be present to be counted. Higher numbers should run faster (default 5)
 
-`-e`    maximum allowable error rate between number of reads with reference base and number of reads with discrepant base. This is calcuated as: `1 - (Nref / (Na + Nc + Ng + Nt))` where Nref is the number of reads with the reference base and Na is the number of reads with "A" at the SNP position, Nc is the number of reads with "C" at the SNP position, etc. If the `-d` option is given and the error rate is greater than this value, the position will be output. (default: 0.1)
+`-e`    maximum allowable error rate between number of reads with reference base and number of reads with discrepant base. This is calcuated as: `1 - (Nref / (Na + Nc + Ng + Nt))` where Nref is the number of reads with the reference base and Na is the number of reads with "A" at the SNP position, Nc is the number of reads with "C" at the SNP position, etc. (default: 0.1)
 
 `-p`    output file prefix (default: "corrected")
 
