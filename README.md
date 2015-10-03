@@ -11,8 +11,10 @@ Required for all:
 * bash
 * perl
 
-Required for some (see documentation for individual programs for more information):
+Required for some (ksnp_snp_confirm.pl, kmer_core.pl, kmer_compare.pl):
 * [jellyfish](http://www.cbcb.umd.edu/software/jellyfish/) (>= v1.1.2).  This is likely already installed and in your path if you have kSNP.
+
+Optional for some:
 * gzip
 
 ##Installation
