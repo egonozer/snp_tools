@@ -125,13 +125,13 @@ Strains may be provided assembled as fasta files or raw read files or both. To s
         
 Each line in the file should have three columns separated by tabs.
 
-* 1st column: Unique strain ID
-* 2nd column: Path to sequence or kmer file
-* 3rd column: File type. The possible file types are as follows
-..*`fs`    = assembled sequence file in fasta format
-..*`fr`    = sequence reads in fasta or fastq format
-..*`js`    = kmer file
-..*`jr`    = kmer file from reads
+1. 1st column: Unique strain ID
+2. 2nd column: Path to sequence or kmer file
+3. 3rd column: File type. The possible file types are as follows
+  * `fs`    = assembled sequence file in fasta format
+  * `fr`    = sequence reads in fasta or fastq format
+  * `js`    = kmer file
+  * `jr`    = kmer file from reads
 
 If the third column entry does not match these types or is left blank, the file will be assumed to be of type 'fs'.
         
