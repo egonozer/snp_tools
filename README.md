@@ -189,7 +189,103 @@ In the above example, instead of all possible pairwise comparisons of the 5 geno
 `-t`    threads (default: 15)
 
 ###kmer_compare_groups.pl
+```
+kmer_compare_groups.pl <genome list file> <kmer_compare.raw.txt>
+```
+Outputs values and statistics of SNP differences based on different groupings.
+
+**Genome list format:**  
+First line should contain a listing of the different categories separated by commas. It should start with a '#' symbol.  
+For example, if the categories your genomes can belong to inlcude species, clade, and outbreak, then your first line should look like this:
+```
+#species,clade,outbreak
+```
+All subsequent lines should start with the name of the genome (same names as in kmer_compare.raw.txt) and an integer for each group listed above to indicate which group the genome belongs to, all separated by commas. You can also give a '0' to indicate no group membership or unknown group membership.
+
+For example, using the gropus outlined above, the next lines could be:
+```
+genA,1,1,1     #genome A belongs to species 1, clade 1, and outbreak 1
+genB,1,2,0     #genome B belongs to species 1, clade 2, and no outbreak
+genC,2,0,0     #genome C belongs to species 2, unknown clade or outbreak
+```
+Group memberships are independent of each other, so in the example above, if genomes B and C were given 1 and 2 respectively to indicate different strains, but both were given 2 for clade, they will still be grouped together as clade-mates.
+
+**Options:**  
+`-x`    if given, will only count intergroup comparisons as different. For example, a comparison between a group 1 and a group 2 strain would be counted as "different". A comparison between a group 1 strain and a group 0 strain would be counted as "different".  A comparison between a group 0 strain and another group 0 strain would not be counted as "same" or "different." Default: Comparisons to or between group 0 strains will not be counted at all.
+
+`-p`    Output prefix. Default: 'output'
 
 ###ksnp_matrix_filter.pl
+```
+ksnp_matrix_filter.pl [options] <SNPs_all_matrix.fasta> > <filtered_matrix.fasta>
+```
+Filters the SNP matrix output by kSNP.
+
+**Options:**  
+`-m`    minimum fraction with locus, between 0 and 1.  1 means only loci present in all of the input genomes will be output.  0.5 means only loci present in at least half of the input genomes will be output, etc.  
+(default: all loci will be output)
+
+`-k`    keep locus order.  If given, any loci that do not meet the minimum fraction requirement given above will be replaced with "-" in every genome. Use this option if you have annotation information from kSNP.  
+(default: non-matching loci will be removed)
+
+`-i`    file with list of genomes to include in the ouput. List should be genome names, one per line. Fraction limits given by `-m` will be based on these genomes (i.e. if `-m` is 0.5 and you enter list of 4 genomes for `-i`, output will be loci present in at least 2 of these 4 genomes, regardless of how many total genomes were present in the `SNPs_all_matrix.fasta` file)  
+(default: all genomes will be included)
+
+`-e`    file with list of genomes to exclude from the output. List should be genome names, one per line. Fraction limits given by `-m` will based on those genomes not listed in this file.  
+(default: no genomes will be excluded)
+
+If lists are given to both `-i` and `-e`, fraction calculations will be based on and output will only include those genomes present in `-i`, excluding any genomes that are also present in `-e`.
+
+`-a`    If selected, will calculate minimum locus fraction based on genomes given by `-i` and/or `-e`, but will output all input genomes, either omitting the filtered SNP loci or, if `-k` is given, substituting a "-" at each of the filtered positions.
+
+`-g`    If selected, will keep all positions that match the criteria above, even if a locus has gaps in one or more genomes. This is automatically selected if the `-k` option is given above.  
+(default behavior is to only output true SNP loci, omitting loci with the same base in every genome they were found in, but not found in every genome, i.e. loci with gaps '-')
+
+*Below options need to be given only if you want to filter SNPs based on coordinates of one of the genomes input into kSNP*
+        
+`-r`    Coordinate restriction genome name
+
+`-I`    coordinates within the restriction genome to include in the output. Start and stop coordinates must be in the last two columns, respectively
+
+`-E`    coordinates within the restriction genome to exclude from the output. Start and stop coordinates must be in the last two columns, respectively
+
+If both `-I` and `-E` are given, exclusions listed in `-E` will trump inclusions listed in `-I`.
+
+`-s`    "SNPs_all" file from kSNP. This is REQUIRED if you want to filter by coordinates.
 
 ###ksnp_matrix_to_diff_matrix.pl
+```
+ksnp_matrix_to_diff_matrix.pl [options] <SNPs_all_matrix.fasta> 
+```
+Takes matrix.fasta file produced by kSNP and outputs a distance matrix of all SNP differences.
+
+**Options:**
+
+`-g`    If given, will count a difference between two genomes at a position where no base was present (i.e. genome 1 has "A", genome 2 has "-")  
+(default: only base differences will be counted)
+
+`-m`    minimum fraction of genomes in which a SNP position must be found in order to be counted (i.e. "1" for SNP position found in all genomes, "0.7" for SNP position found in at least 70% of the genomes)  
+(default: any SNP position found in at least 2 of the input genomes will be included, i.e. "0")
+
+`-i`    file with list of genomes to include in the ouput. List should be genome names, one per line. Fraction limits given by `-m` will be based on these genomes (i.e. if `-m` is 0.5 and you enter list of 4 genomes for `-i`, output will be loci present in at least 2 of these 4 genomes, regardless of how many total genomes were present in the `SNPs_all_matrix.fasta` file)  
+(default: all genomes will be included)
+
+`-e`    file with list of genomes to exclude from the output. List should be genome names, one per line. Fraction limits given by -m will based on those genomes not listed in this file.  
+(default: no genomes will be excluded)
+        
+If lists are given to both `-i` and `-e`, fraction calculations will be based on and output will only include those genomes present in `-i`, excluding any genomes that are also present in `-e`.
+
+`-a`    If kSNP was run with a reference genome and information about SNP annotation is desired, give the `SNP_annotations` file here.
+
+*Below options apply only if a `SNP_annotations` file was given to option `-a`*
+
+`-b`    `SNPs_all` file output by kSNP. If given, will output genomic position(s) of each SNP in the genomes being compared
+
+`-p`    Only output annotations on proteins
+
+`-s`    Only output non-synonymous SNPs (forces `-p`, obviously)
+ 
+`-u`    If `-p` or `-s` are given, also output SNPs that were not found in the annotated genome
+ 
+`-o`    Output prefix for annotation information (default "output")
+  
