@@ -2,7 +2,7 @@
 A set of tools and add-ons for SNP analysis 
 
 ##Introduction 
-Tools and add-ons primarily for working with the output of [kSNP](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0081760), an alignment-free SNP identifying software package. 
+Tools and add-ons primarily for working with the output of [kSNP](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0081760), an alignment-free SNP identifying software package. The basic functions of ksnp_matrix_filter.pl and ksnp_matrix_to_diff_matrix.pl will work on any aligned sequences in fasta format. 
 
 ##Requirements
 All packages are written in Perl and require the bash shell. Prerequistes below must be available in your PATH to function. 
@@ -289,3 +289,5 @@ If lists are given to both `-i` and `-e`, fraction calculations will be based on
  
 `-o`    Output prefix for annotation information (default "output")
   
+##Contact
+For questions or concerns, contact me: e-ozer@northwestern.edu
