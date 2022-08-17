@@ -1,10 +1,13 @@
 # snp_tools
+
 A set of tools and add-ons for SNP analysis 
 
-##Introduction 
+## Introduction 
+
 Tools and add-ons primarily for working with the output of [kSNP](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0081760), an alignment-free SNP identifying software package. The basic functions of ksnp_matrix_filter.pl and ksnp_matrix_to_diff_matrix.pl will work on any aligned sequences in fasta format. 
 
-##Requirements
+## Requirements
+
 All packages are written in Perl and require the bash shell. Prerequistes below must be available in your PATH to function. 
 
 Required for all:
@@ -17,15 +20,20 @@ Required for some (ksnp_snp_confirm.pl, kmer_core.pl, kmer_compare.pl):
 Optional for some:
 * gzip
 
-##Installation
-Simply download the folder containing the scripts and place it somewhere you'll be able to find it.
-**IMPORTANT**: The _lib_ directory must stay in the same directory as the parent scripts. Do not move or rename this directory or any of its contents.
+## Installation
 
-##Programs
-###ksnp_snp_confirm.pl
+Simply download the folder containing the scripts and place it somewhere you'll be able to find it.
+
+**IMPORTANT**: The `lib` directory must stay in the same directory as the parent scripts. Do not move or rename this directory or any of its contents.
+
+## Programs
+
+### ksnp_snp_confirm.pl
+
 ```
 ksnp_snp_confirm.pl [options] -f file_of_files.txt -a SNPs_all
 ```
+
 Searches sequence reads for SNP kmers output by kSNP, confirms the SNP assignments, and outputs new SNPs_all and SNPs_all_matrix.fasta files with corrected positions.
 Does the following corrections:
 
@@ -47,6 +55,7 @@ Will also output, to STDOUT, a listing of modified SNP positions. The categories
 `-f`    file of files.  Contains genome names (as provided to kSNP) and paths to one or more fastq read files. Gzipped or uncompressed fastq read files may be used. If no read file is listed, the SNP positions will be included in the output files as given in the SNPs_all input file.
 
 Format of example file:
+
 ```
 genome_A<tab>/path/to/genome_A_reads_1.fastq.gz<tab>/path/to/genome_A_reads_2.fastq.gz
 genome_B<tab>/path/to/genome_B_reads.fastq.gz
@@ -67,10 +76,12 @@ etc..
 
 `-t`    number of threads (default: 15)
 
-###kmer_core.pl
+### kmer_core.pl
+
 ```
 kmer_core.pl
 ```
+
 **DESCRIPTION:** Determines the set of kmers that are present in a given subset of a group of input genomes. This can be used as input to kSNP.
 
 **PARAMETERS:**
@@ -86,12 +97,15 @@ Required:
 `<genome_id> </path/to/sequence.fasta> </path/to/reads.fastq OPTIONAL> </path/to/reads2.fastq.gz OPTIONAL> etc.`
 
 *EXAMPLE:*
+
 ```        
 PAO1 seqs/PAO1_contigs.fasta
 PA14 seqs/PA14_contigs.fasta reads/PA14_1.fastq.gz reads/PA14_2.fastq.gz
 PA7 seqs/PA7_contigs.fasta reads/PA7_1.fastq.gz
 ```
+
 ---
+
 Optional:
 
 `-a`    minimum percentage of the total input genomes in which a kmer must be found to be considered core (default: 100)
@@ -109,10 +123,12 @@ Optional:
 `-e`    [in reads file(s)] maximum allowable error rate between number of reads with reference base and number of reads with discrepant base. This is calcuated as: `1 - (Nref / (Na + Nc + Ng + Nt))` where `Nref` is the number of reads with the reference base and `Na` is the number of reads with "A" at the SNP position, `Nc` is the number of reads with "C" at the SNP position, etc. (default: 0.1)
 
 
-###kmer_compare.pl
+### kmer_compare.pl
+
 ```
 kmer_compare.pl
 ```
+
 Determines SNP differences among pairs of sequences.
 
 **Required:**
@@ -142,6 +158,7 @@ If multiple files are provided for a strain (i.e. forward and reverse reads), th
 Optional comments may follow any line as long as they are preceded by a `#`.
         
 Example file:
+
 ```
 genA    /path/to/genA.fasta fs          #genA is a sequence assembly
 genB    /path/to/genB.fasta fs          #genB is a sequence assembly
@@ -188,26 +205,32 @@ In the above example, instead of all possible pairwise comparisons of the 5 geno
 
 `-t`    threads (default: 15)
 
-###kmer_compare_groups.pl
+### kmer_compare_groups.pl
+
 ```
 kmer_compare_groups.pl <genome list file> <kmer_compare.raw.txt>
 ```
+
 Outputs values and statistics of SNP differences based on different groupings.
 
 **Genome list format:**  
 First line should contain a listing of the different categories separated by commas. It should start with a '#' symbol.  
 For example, if the categories your genomes can belong to inlcude species, clade, and outbreak, then your first line should look like this:
+
 ```
 #species,clade,outbreak
 ```
+
 All subsequent lines should start with the name of the genome (same names as in kmer_compare.raw.txt) and an integer for each group listed above to indicate which group the genome belongs to, all separated by commas. You can also give a '0' to indicate no group membership or unknown group membership.
 
 For example, using the gropus outlined above, the next lines could be:
+
 ```
 genA,1,1,1     #genome A belongs to species 1, clade 1, and outbreak 1
 genB,1,2,0     #genome B belongs to species 1, clade 2, and no outbreak
 genC,2,0,0     #genome C belongs to species 2, unknown clade or outbreak
 ```
+
 Group memberships are independent of each other, so in the example above, if genomes B and C were given 1 and 2 respectively to indicate different strains, but both were given 2 for clade, they will still be grouped together as clade-mates.
 
 **Options:**  
@@ -215,10 +238,12 @@ Group memberships are independent of each other, so in the example above, if gen
 
 `-p`    Output prefix. Default: 'output'
 
-###ksnp_matrix_filter.pl
+### ksnp_matrix_filter.pl
+
 ```
 ksnp_matrix_filter.pl [options] <SNPs_all_matrix.fasta> > <filtered_matrix.fasta>
 ```
+
 Filters the SNP matrix output by kSNP.
 
 **Options:**  
@@ -253,10 +278,12 @@ If both `-I` and `-E` are given, exclusions listed in `-E` will trump inclusions
 
 `-s`    "SNPs_all" file from kSNP. This is REQUIRED if you want to filter by coordinates.
 
-###ksnp_matrix_to_diff_matrix.pl
+### ksnp_matrix_to_diff_matrix.pl
+
 ```
 ksnp_matrix_to_diff_matrix.pl [options] <SNPs_all_matrix.fasta> 
 ```
+
 Takes matrix.fasta file produced by kSNP and outputs a distance matrix of all SNP differences.
 
 **Options:**
@@ -289,5 +316,6 @@ If lists are given to both `-i` and `-e`, fraction calculations will be based on
  
 `-o`    Output prefix for annotation information (default "output")
   
-##Contact
+## Contact
+
 For questions or concerns, contact me: e-ozer@northwestern.edu
